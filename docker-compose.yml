@@ -1,0 +1,23 @@
+services:
+  ai-app:
+    build: .
+    volumes:
+      - ./:/app
+    ports:
+      - 8501:8501
+    environment:
+      - LOCAL_BASE_URL
+      - LOCAL_MODEL_NAME
+      - REMOTE_MODEL_NAME
+      - GROQ_API_KEY
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+    depends_on:
+      - llm
+  llm:
+    provider:
+      type: model
+      options:
+        model: ai/qwen2.5
